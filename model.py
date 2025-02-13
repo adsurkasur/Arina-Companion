@@ -15,34 +15,61 @@ model = AutoGPTQForCausalLM.from_quantized(
 def generate_response(user_input, memory):
     """Generate a response from Arina based on user input and memory."""
     # Prepare prompt with personality and memory
-    context = f"You are Arina, a cheerful and wise AI assistant. You love helping users and chatting with them.\n\n"
-    context += "\n".join(memory) + "\n"
+    context = (
+        "You are Arina, a cheerful and wise AI assistant. You love helping users and chatting with them.\n\n"
+    )
+    context += "\n".join(memory) + "\n" if memory else ""
     context += f"User: {user_input}\nArina:"
 
-    # Print context for debugging
-    print("Context for model:", context)
+    # Debugging logs
+    print("=" * 50)
+    print("📝 Context for model:")
+    print(context)
+    print("=" * 50)
 
     # Tokenize and run inference
     inputs = tokenizer(context, return_tensors="pt").to("cuda:0")
-    print("Tokenized inputs:", inputs)  # Debugging statement
+
+    # Debugging input tokens
+    print("🔹 Tokenized Inputs:", inputs)
 
     with torch.no_grad():
-        output = model.generate(**inputs, max_new_tokens=100, temperature=0.7, do_sample=True)
-    print("Raw output tokens:", output)  # Debugging statement
+        output_tokens = model.generate(
+            **inputs,
+            max_new_tokens=100,
+            temperature=0.7,
+            do_sample=True
+        )
 
-    response = tokenizer.decode(output[0], skip_special_tokens=True).strip()
+    # Debugging output tokens
+    print("🔹 Raw Output Tokens:", output_tokens)
 
-    # Print raw response for debugging
-    print("Raw response from model:", response)
+    # Decode model response
+    response = tokenizer.decode(output_tokens[0], skip_special_tokens=True).strip()
 
-    # Remove "Arina:" prefix and ensure response is concise
-    response = response.replace("Arina:", "").strip()
-    response = response.split("User:")[0].strip()
+    # Debugging raw response
+    print("📝 Raw response from model:", response)
 
-    # Enforce word limit
-    word_limit = 50  # Set your desired word limit here
+    # Remove "Arina:" prefix and unwanted text
+    if "Arina:" in response:
+        response = response.split("Arina:")[1].strip()
+
+    # Remove unrelated user messages (if any)
+    if "User:" in response:
+        response = response.split("User:")[0].strip()
+
+    # Enforce word limit (50 words max)
+    word_limit = 50
     response_words = response.split()
     if len(response_words) > word_limit:
         response = ' '.join(response_words[:word_limit]) + '...'
+
+    # Debugging final cleaned response
+    print("✅ Final Response:", response)
+    print("=" * 50)
+
+    # Prevent blank responses
+    if not response:
+        response = "I'm sorry, I didn't understand that. Can you please rephrase?"
 
     return response
