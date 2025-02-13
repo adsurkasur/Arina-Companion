@@ -1,10 +1,30 @@
+# Virtual environment
 venv/
+
+# Python cache files
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+
+# IDE-specific files
 .DS_Store
 .idea/
 .vscode/
-config.json
+
+# Environment variables (sensitive data)
 .env
+config.json  # If storing API keys or config settings
+
+# Bot memory and logs
+memory.json
+*.log
+debug.log
+
+# Model checkpoints and large files (if applicable)
+*.ckpt
+*.safetensors
+*.pth
+
+# Jupyter Notebook checkpoints (if using Jupyter)
+.ipynb_checkpoints/

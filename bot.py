@@ -9,10 +9,10 @@ from model import generate_response  # Import the generate_response function
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 
-# Initialize Discord bot
+# Initialize Discord bot with proper intents
 intents = discord.Intents.default()
 intents.messages = True
-intents.message_content = True
+intents.message_content = True  # Required to read message content
 client = discord.Client(intents=intents)
 
 # Memory (stores user conversations)
@@ -72,19 +72,15 @@ async def on_message(message):
         if not user_input:
             response = "Yes? How can I help you? 😊"
         else:
-            # Generate response using the model
             response = generate_response(user_input, list(memory))
 
-            # Check if response is empty
             if not response:
                 response = "I'm sorry, I didn't understand that. Can you please rephrase?"
 
-            # Debugging final response
-            print(f"💬 Arina's Response: {response}")
+        print(f"💬 Arina's Response: {response}")
 
-            # Store response in memory
-            memory.append(f"User: {user_input}\nArina: {response}")
-            save_memory()  # Save learning progress
+        memory.append(f"User: {user_input}\nArina: {response}")
+        save_memory()
 
         await message.channel.send(response)
 
