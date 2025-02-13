@@ -9,8 +9,8 @@ Arina Companion is an AI-powered Discord chatbot designed to be a cheerful, wise
 - ⚡ Optimized for Speed – Runs efficiently on local machines with GPU acceleration.
 
 # 🔧 Tech Stack
-Language Model: TinyLlama (GPTQ)
-Framework: PyTorch, Transformers
-Bot API: Discord.py
-Memory: Custom local storage for learning
+- Language Model: TinyLlama (GPTQ)
+- Framework: PyTorch, Transformers
+- Bot API: Discord.py
+- Memory: Custom local storage for learning
 Arina Companion is designed to be more than just a chatbot—it’s a growing AI assistant that evolves through interactions. 🚀
